@@ -1,0 +1,13 @@
+/* chatgpt help for resizing the calendar component to fit screen */
+.react-calendar {
+  border: none;
+  margin: 0 auto;
+  width: 90vw;
+  max-width: 95vw;
+  font-size: 1.25rem;
+}
+
+.react-calendar__tile {
+  height: 110px;
+  line-height: 100px;
+}
