@@ -1,0 +1,49 @@
+# Python
+# ----------------------------------
+# Virtual Environments
+venv/
+.venv/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+
+# Distribution / build files
+dist/
+build/
+*.egg-info/
+
+# Logs and temporary files
+*.log
+*.tmp
+
+# MyPy cache
+.mypy_cache/
+
+# Test coverage
+.coverage
+htmlcov/
+
+# Flask
+# ----------------------------------
+# Instance folder
+instance/
+
+# Flask session data (if using file-based sessions)
+/*_session/
+
+# SQLite database file (if using locally)
+*.sqlite
+*.db*
+
+# Environment variables
+# ----------------------------------
+# NEVER commit files with secrets
+.env
+.flaskenv
+
+# IDE/Editor files
+# ----------------------------------
+.vscode/
+.idea/
+.DS_Store # macOS system files
