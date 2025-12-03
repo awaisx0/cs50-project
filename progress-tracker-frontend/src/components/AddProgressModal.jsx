@@ -15,15 +15,30 @@ const categories = [
 
 const AddProgressModal = ({ isOpen, onClose, date }) => {
   const [progressText, setProgressText] = useState("");
-  const [hours, setHours] = useState(0);
-  const [mins, setMins] = useState(0);
-  const [category, setCategory] = useState("");
+  const [fieldsObj, setFieldsObj] = useState([
+    {
+      hours: "",
+      mins: "",
+      category: "",
+      text: "",
+    },
+  ]);
 
   if (!isOpen) return null;
 
-  function handleCategorySelect(e) {
-    setCategory(e.target.value);
-    console.log(category);
+  function addField() {
+    setFieldsObj((prev) => [
+      ...prev,
+      { hours: "", mins: "", category: "", text: "" },
+    ]);
+  }
+
+  function handleFieldChange(index, field, value) {
+    setFieldsObj((prev) => {
+      const updated = [...prev];
+      updated[index][field] = value;
+      return updated;
+    });
   }
 
   return createPortal(
@@ -36,38 +51,59 @@ const AddProgressModal = ({ isOpen, onClose, date }) => {
         {date.toLocaleDateString()}
       </h3>
 
-      <input
-        className="border outline-0 p-2 w-1/5"
-        name="hours"
-        type="number"
-        max={24}
-        min={0}
-        value={hours}
-        placeholder="hours"
-        onChange={(e) => setHours(e.target.value)}
-      />
-
-      <input
-        className="border outline-0 p-2 w-1/5"
-        name="mins"
-        type="number"
-        max={60}
-        min={0}
-        value={mins}
-        placeholder="mins"
-        onChange={(e) => setMins(e.target.value)}
-      />
-
-      <select onChange={handleCategorySelect}>
-        <option value={""}>Select category</option>
-        {categories.map((category) => (
-          <option key={category} value={category.toLocaleLowerCase()}>
-            {category}
-          </option>
+      <div className="fields overflow-y-scroll max-h-[40vh] p-5">
+        {fieldsObj.map((field, index) => (
+          <div>
+            {/* hours */}
+            <input
+              className="border outline-0 p-2 w-1/5"
+              type="text"
+              name="hours"
+              max={24}
+              min={0}
+              value={field.hours}
+              placeholder="hours"
+              onChange={(e) =>
+                handleFieldChange(index, "hours", e.target.value)
+              }
+            />
+            {/* mins */}
+            <input
+              className="border outline-0 p-2 w-1/5"
+              type="text"
+              name="mins"
+              max={60}
+              min={0}
+              value={field.mins}
+              placeholder="mins"
+              onChange={(e) => handleFieldChange(index, "mins", e.target.value)}
+            />
+            {/* category */}
+            <select
+              onChange={(e) =>
+                handleFieldChange(index, "category", e.target.value)
+              }
+            >
+              <option value={""}>Select category</option>
+              {categories.map((category) => (
+                <option key={category} value={category.toLocaleLowerCase()}>
+                  {category}
+                </option>
+              ))}
+            </select>
+            <br></br>
+            <input
+              type="text"
+              className="border outline-0 p-2 w-full"
+              value={field.text}
+              onChange={(e) => handleFieldChange(index, "text", e.target.value)}
+            />
+          </div>
         ))}
-      </select>
-      <br></br>
-      <button className="text-blue-500">+ Add field</button>
+      </div>
+      <button className="text-blue font-semibold" onClick={addField}>
+        + Add field
+      </button>
       <textarea
         className="border outline-0 w-full h-1/3 resize-none p-3"
         name="raw-text"
@@ -75,7 +111,7 @@ const AddProgressModal = ({ isOpen, onClose, date }) => {
         placeholder="enter raw text of your day here"
         onChange={(e) => setProgressText(e.target.value)}
       />
-      <button className="bg-blue-600 rounded-2xl text-white p-3">Save</button>
+      <button className="bg-blue rounded-2xl text-white p-3">Save</button>
     </div>,
     document.body,
   );
