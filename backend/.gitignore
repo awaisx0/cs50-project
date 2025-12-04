@@ -47,3 +47,5 @@ instance/
 .vscode/
 .idea/
 .DS_Store # macOS system files
+sqlite_commands.txt
+progress.db

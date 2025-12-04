@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { RxCross1 } from "react-icons/rx";
 
@@ -23,6 +23,19 @@ const AddProgressModal = ({ isOpen, onClose, date }) => {
       text: "",
     },
   ]);
+
+  useEffect(() => {
+    if (!date) return;
+    const url = `http://localhost:5000/api/get-progress?date=${date.toLocaleDateString()}`;
+
+    fetch(url)
+      .then((res) => {
+        if (!res.ok) throw new Error("Network response was not okay");
+        return res.json();
+      })
+      .then((data) => setFieldsObj(data))
+      .catch((err) => console.log("Fetch error: ", err));
+  }, [date]);
 
   if (!isOpen) return null;
 
@@ -80,13 +93,14 @@ const AddProgressModal = ({ isOpen, onClose, date }) => {
             />
             {/* category */}
             <select
+              value={field.category}
               onChange={(e) =>
                 handleFieldChange(index, "category", e.target.value)
               }
             >
               <option value={""}>Select category</option>
               {categories.map((category) => (
-                <option key={category} value={category.toLocaleLowerCase()}>
+                <option key={category} value={category.toLowerCase()}>
                   {category}
                 </option>
               ))}
