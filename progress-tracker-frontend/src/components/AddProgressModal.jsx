@@ -20,7 +20,7 @@ const AddProgressModal = ({ isOpen, onClose, date }) => {
       hours: "",
       mins: "",
       category: "",
-      text: "",
+      work_text: "",
     },
   ]);
 
@@ -42,7 +42,7 @@ const AddProgressModal = ({ isOpen, onClose, date }) => {
   function addField() {
     setFieldsObj((prev) => [
       ...prev,
-      { hours: "", mins: "", category: "", text: "" },
+      { hours: "", mins: "", category: "", work_text: "" },
     ]);
   }
 
@@ -109,7 +109,7 @@ const AddProgressModal = ({ isOpen, onClose, date }) => {
             <input
               type="text"
               className="border outline-0 p-2 w-full"
-              value={field.text}
+              value={field.work_text}
               onChange={(e) => handleFieldChange(index, "text", e.target.value)}
             />
           </div>

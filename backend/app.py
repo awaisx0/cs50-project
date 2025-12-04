@@ -39,7 +39,7 @@ def get_progress():
 def save_progress():
     date = request.get_json().get("date")
     work_fields = request.get_json().get("work_fields")
-    day_text = request.get_json().get("day_text", "j")
+    day_text = request.get_json().get("day_text", "")
     db = get_db()
     cursor = db.cursor()
     date_id = (cursor.execute("SELECT id FROM dates WHERE date = ?", (date, )).fetchone())
@@ -61,6 +61,25 @@ def save_progress():
         cursor.execute("INSERT INTO day_text (date_id, raw_text) VALUES(?, ?)", (date_id, day_text))
         db.commit()
         return "success"
+    else:
+        date_id = dict(date_id).get("id")
+        # deleting previous which have same date_id
+        cursor.execute("DELETE FROM work WHERE date_id = ?", (date_id, ))
+        db.commit()
+        cursor.execute("DELETE FROM day_text WHERE date_id = ?", (date_id, ))
+        db.commit()
+
+        # inserting updated content
+        for field in work_fields:
+            cursor.execute("INSERT INTO work (date_id, hours, mins, category, work_text) VALUES(?, ?, ?, ?, ?)", (date_id, field.get("hours"), field.get("mins"), field.get("category"), field.get("text")))
+            db.commit()
+        
+        # insert day_text
+        cursor.execute("INSERT INTO day_text (date_id, raw_text) VALUES(?, ?)", (date_id, day_text))
+        db.commit()
+
+
+
     return "success 2"
 
         
