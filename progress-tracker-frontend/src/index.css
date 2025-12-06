@@ -2,20 +2,28 @@
 /* @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"); */
 @theme {
   --color-mint-500: oklch(0.72 0.11 178);
-  --color-my-gray: #f8f9fa;
+  --color-my-gray: oklch(92.9% 0.013 255.508);
   --color-blue: oklch(54.6% 0.245 262.881);
 }
 
 :root {
   --font-main: "Inter", sans-serif;
   --blue: oklch(54.6% 0.245 262.881);
+  --hover-gray: oklch(70.5% 0.015 286.067);
 }
 
-input {
+* {
+  box-sizing: border-box;
+}
+input:focus {
   border-color: var(--blue);
+  background-color: white;
+}
+input {
+  /* border-color: var(--blue); */
   border-width: 2px;
   border-radius: 10px;
-  margin: 5px;
+  /* margin: 5px; */
 }
 
 select {
@@ -23,5 +31,5 @@ select {
   border-width: 2px;
   border-radius: 10px;
   outline: none;
-  padding: 5px;
+  padding: 10px;
 }

@@ -39,11 +39,26 @@ const AddProgressModal = ({ isOpen, onClose, date }) => {
 
   if (!isOpen) return null;
 
+  function handleClose() {
+    onClose();
+    setFieldsObj([
+      {
+        hours: "",
+        mins: "",
+        category: "",
+        work_text: "",
+      },
+    ]);
+  }
+
   function addField() {
     setFieldsObj((prev) => [
       ...prev,
       { hours: "", mins: "", category: "", work_text: "" },
     ]);
+  }
+  function handleRemoveField(index) {
+    setFieldsObj((prev) => prev.filter((_, i) => i !== index));
   }
 
   function handleFieldChange(index, field, value) {
@@ -55,77 +70,94 @@ const AddProgressModal = ({ isOpen, onClose, date }) => {
   }
 
   return createPortal(
-    <div className="add-progress-modal absolute bg-my-gray h-[97vh] w-[40%] top-0 rounded-2xl left-100 border-black border px-10 py-7">
-      <div className="title-bar flex justify-between items-center">
-        <h2 className="font-bold text-3xl">Add progress</h2>
-        <RxCross1 className="" size={20} onClick={onClose} />
-      </div>
-      <h3 className="date font-semibold text-2xl">
-        {date.toLocaleDateString()}
-      </h3>
-
-      <div className="fields overflow-y-scroll max-h-[40vh] p-5">
-        {fieldsObj.map((field, index) => (
-          <div>
-            {/* hours */}
-            <input
-              className="border outline-0 p-2 w-1/5"
-              type="text"
-              name="hours"
-              max={24}
-              min={0}
-              value={field.hours}
-              placeholder="hours"
-              onChange={(e) =>
-                handleFieldChange(index, "hours", e.target.value)
-              }
-            />
-            {/* mins */}
-            <input
-              className="border outline-0 p-2 w-1/5"
-              type="text"
-              name="mins"
-              max={60}
-              min={0}
-              value={field.mins}
-              placeholder="mins"
-              onChange={(e) => handleFieldChange(index, "mins", e.target.value)}
-            />
-            {/* category */}
-            <select
-              value={field.category}
-              onChange={(e) =>
-                handleFieldChange(index, "category", e.target.value)
-              }
-            >
-              <option value={""}>Select category</option>
-              {categories.map((category) => (
-                <option key={category} value={category.toLowerCase()}>
-                  {category}
-                </option>
-              ))}
-            </select>
-            <br></br>
-            <input
-              type="text"
-              className="border outline-0 p-2 w-full"
-              value={field.work_text}
-              onChange={(e) => handleFieldChange(index, "text", e.target.value)}
-            />
-          </div>
-        ))}
-      </div>
-      <button className="text-blue font-semibold" onClick={addField}>
-        + Add field
-      </button>
-      <textarea
-        className="border outline-0 w-full h-1/3 resize-none p-3"
-        name="raw-text"
-        value={progressText}
-        placeholder="enter raw text of your day here"
-        onChange={(e) => setProgressText(e.target.value)}
+    <div className="add-progress-modal absolute bg-my-gray h-[97vh] w-[40%] top-0 left-100 border-black border rounded-2xl p-8">
+      <RxCross1
+        className="absolute top-7 right-7"
+        size={20}
+        onClick={handleClose}
       />
-      <button className="bg-blue rounded-2xl text-white p-3">Save</button>
+      <div className="modal-content flex flex-col justify-start gap-5">
+        <h2 className="font-bold text-3xl text-center">Add progress</h2>
+        <h3 className="date font-semibold text-2xl text-center">
+          {date.toLocaleDateString()}
+        </h3>
+
+        <div className="fields overflow-y-auto max-h-[40vh] h-[40vh] pr-5">
+          {fieldsObj.map((field, index) => (
+            <div className="hover:bg-gray-300 p-3 rounded flex gap-2 flex-col">
+              <div className="flex justify-between items-center">
+                {/* hours */}
+                <div className="flex gap-2">
+                  <input
+                    className="border outline-0 p-2 w-1/5"
+                    type="text"
+                    name="hours"
+                    max={24}
+                    min={0}
+                    value={field.hours}
+                    placeholder="hours"
+                    onChange={(e) =>
+                      handleFieldChange(index, "hours", e.target.value)
+                    }
+                  />
+                  {/* mins */}
+                  <input
+                    className="border outline-0 p-2 w-1/5"
+                    type="text"
+                    name="mins"
+                    max={60}
+                    min={0}
+                    value={field.mins}
+                    placeholder="mins"
+                    onChange={(e) =>
+                      handleFieldChange(index, "mins", e.target.value)
+                    }
+                  />
+                  {/* category */}
+                  <select
+                    name="category"
+                    value={field.category}
+                    onChange={(e) =>
+                      handleFieldChange(index, "category", e.target.value)
+                    }
+                  >
+                    <option value={""}>Select category</option>
+                    {categories.map((category) => (
+                      <option key={category} value={category.toLowerCase()}>
+                        {category}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <RxCross1 size={25} onClick={() => handleRemoveField(index)} />
+              </div>
+              <input
+                type="text"
+                placeholder="work text"
+                className="border outline-0 p-2 w-full"
+                value={field.work_text}
+                onChange={(e) =>
+                  handleFieldChange(index, "work_text", e.target.value)
+                }
+              />
+            </div>
+          ))}
+        </div>
+        <button className="text-blue font-semibold w-fit" onClick={addField}>
+          + Add field
+        </button>
+
+        <textarea
+          className="border outline-0 w-full h-1/4 resize-none p-3 focus:border-blue rounded focus:bg-white"
+          name="raw-text"
+          value={progressText}
+          placeholder="enter raw text of your day here"
+          onChange={(e) => setProgressText(e.target.value)}
+        />
+        <button className="bg-blue rounded-2xl text-white p-3 w-fit outline-0">
+          Save
+        </button>
+      </div>
     </div>,
     document.body,
   );
