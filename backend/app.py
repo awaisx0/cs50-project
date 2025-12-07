@@ -9,6 +9,7 @@ def get_db():
         g.db.row_factory = sqlite3.Row
     return g.db
 
+# helper - maybe
 def list_dict_null_check(list_dicts):
     for dic in list_dicts:
         if dic:
@@ -29,11 +30,33 @@ def index():
 
 @app.route("/api/get-progress")
 def get_progress():
-    date = request.args.get("date")
+    """
+    get-progress route
+    """
+    date = request.args.get("date", "")
+    if not date:
+        return "no date given"
+    
+    # todo: handle date validation
+    
     db = get_db()
     cursor = db.cursor()
+    # get work_fields
     result = cursor.execute("SELECT * FROM work WHERE date_id = (SELECT id FROM dates WHERE date = ?)", (date,)).fetchall()
-    return jsonify([dict(row) for row in result])
+    work_fields = [dict(row) for row in result]
+    # get day_text
+    result = cursor.execute("SELECT * FROM day_text WHERE date_id = (SELECT id FROM dates WHERE date = ?)", (date,)).fetchone()
+    if result is not None:
+        day_text = dict(result)
+    else:
+        day_text = {}
+
+    # return both as json
+    return jsonify({
+        "work_fields": work_fields,
+        "day_text": day_text
+    })
+
 
 @app.route("/api/save-progress", methods=["POST"])
 def save_progress():
@@ -54,7 +77,7 @@ def save_progress():
 
         # insert work fields
         for field in work_fields:
-            cursor.execute("INSERT INTO work (date_id, hours, mins, category, work_text) VALUES(?, ?, ?, ?, ?)", (date_id, field.get("hours"), field.get("mins"), field.get("category"), field.get("text")))
+            cursor.execute("INSERT INTO work (date_id, hours, mins, category, work_text) VALUES(?, ?, ?, ?, ?)", (date_id, field.get("hours"), field.get("mins"), field.get("category"), field.get("work_text")))
             db.commit()
         
         # insert day_text
@@ -71,7 +94,7 @@ def save_progress():
 
         # inserting updated content
         for field in work_fields:
-            cursor.execute("INSERT INTO work (date_id, hours, mins, category, work_text) VALUES(?, ?, ?, ?, ?)", (date_id, field.get("hours"), field.get("mins"), field.get("category"), field.get("text")))
+            cursor.execute("INSERT INTO work (date_id, hours, mins, category, work_text) VALUES(?, ?, ?, ?, ?)", (date_id, field.get("hours"), field.get("mins"), field.get("category"), field.get("work_text")))
             db.commit()
         
         # insert day_text

@@ -14,7 +14,7 @@ const categories = [
 ];
 
 const AddProgressModal = ({ isOpen, onClose, date }) => {
-  const [progressText, setProgressText] = useState("");
+  const [dayText, setDayText] = useState("");
   const [fieldsObj, setFieldsObj] = useState([
     {
       hours: "",
@@ -30,10 +30,17 @@ const AddProgressModal = ({ isOpen, onClose, date }) => {
 
     fetch(url)
       .then((res) => {
-        if (!res.ok) throw new Error("Network response was not okay");
+        // if (!res.ok) throw new Error("Network response was not okay");
         return res.json();
       })
-      .then((data) => setFieldsObj(data))
+      .then((data) => {
+        console.log(data);
+        if (!data.work_fields) return;
+        setFieldsObj(data.work_fields);
+        if (!data.day_text.raw_text) return;
+        setDayText(data.day_text.raw_text);
+        return;
+      })
       .catch((err) => console.log("Fetch error: ", err));
   }, [date]);
 
@@ -49,6 +56,21 @@ const AddProgressModal = ({ isOpen, onClose, date }) => {
         work_text: "",
       },
     ]);
+  }
+
+  async function handleSaveProgresstoDB() {
+    const response = await fetch("http://localhost:5000/api/save-progress", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        date: date.toLocaleDateString(),
+        work_fields: fieldsObj,
+        day_text: dayText,
+      }),
+    });
+    console.log(response);
   }
 
   function addField() {
@@ -150,11 +172,14 @@ const AddProgressModal = ({ isOpen, onClose, date }) => {
         <textarea
           className="border outline-0 w-full h-1/4 resize-none p-3 focus:border-blue rounded focus:bg-white"
           name="raw-text"
-          value={progressText}
+          value={dayText}
           placeholder="enter raw text of your day here"
-          onChange={(e) => setProgressText(e.target.value)}
+          onChange={(e) => setDayText(e.target.value)}
         />
-        <button className="bg-blue rounded-2xl text-white p-3 w-fit outline-0">
+        <button
+          className="bg-blue rounded-2xl text-white p-3 w-fit outline-0"
+          onClick={handleSaveProgresstoDB}
+        >
           Save
         </button>
       </div>
