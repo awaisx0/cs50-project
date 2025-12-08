@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { RxCross1 } from "react-icons/rx";
 
+// categories
 const categories = [
   "JS",
   "PYTHON",
@@ -15,7 +16,8 @@ const categories = [
 
 const AddProgressModal = ({ isOpen, onClose, date }) => {
   const [dayText, setDayText] = useState("");
-  const [fieldsObj, setFieldsObj] = useState([
+  // array of work fields
+  const [workFields, setWorkFields] = useState([
     {
       hours: "",
       mins: "",
@@ -24,31 +26,32 @@ const AddProgressModal = ({ isOpen, onClose, date }) => {
     },
   ]);
 
+  // fetching work fields as date is changed
   useEffect(() => {
     if (!date) return;
     const url = `http://localhost:5000/api/get-progress?date=${date.toLocaleDateString()}`;
 
     fetch(url)
       .then((res) => {
-        // if (!res.ok) throw new Error("Network response was not okay");
+        if (!res.ok) throw new Error("Network response was not okay");
         return res.json();
       })
+      // data is an an object of work_field and day_text
       .then((data) => {
-        console.log(data);
-        if (!data.work_fields) return;
-        setFieldsObj(data.work_fields);
-        if (!data.day_text.raw_text) return;
-        setDayText(data.day_text.raw_text);
+        if (data.work_fields) setWorkFields(data.work_fields);
+        if (data.day_text.raw_text) setDayText(data.day_text.raw_text);
         return;
       })
       .catch((err) => console.log("Fetch error: ", err));
   }, [date]);
 
+  // if modal is not opened, no need to render anything
   if (!isOpen) return null;
 
   function handleClose() {
     onClose();
-    setFieldsObj([
+    // setting all fields to default values
+    setWorkFields([
       {
         hours: "",
         mins: "",
@@ -58,15 +61,18 @@ const AddProgressModal = ({ isOpen, onClose, date }) => {
     ]);
   }
 
-  async function handleSaveProgresstoDB() {
+  // post progress to backend
+  async function handleSaveProgress() {
     const response = await fetch("http://localhost:5000/api/save-progress", {
       method: "POST",
       headers: {
+        // specifying we're sending json
         "Content-Type": "application/json",
       },
+      // json body
       body: JSON.stringify({
         date: date.toLocaleDateString(),
-        work_fields: fieldsObj,
+        work_fields: workFields,
         day_text: dayText,
       }),
     });
@@ -74,18 +80,24 @@ const AddProgressModal = ({ isOpen, onClose, date }) => {
   }
 
   function addField() {
-    setFieldsObj((prev) => [
+    // all prev objects + one more object with empty values
+    setWorkFields((prev) => [
       ...prev,
       { hours: "", mins: "", category: "", work_text: "" },
     ]);
   }
+
   function handleRemoveField(index) {
-    setFieldsObj((prev) => prev.filter((_, i) => i !== index));
+    // removing a field by filtering by index
+    setWorkFields((prev) => prev.filter((_, i) => i !== index));
   }
 
+  //
   function handleFieldChange(index, field, value) {
-    setFieldsObj((prev) => {
+    setWorkFields((prev) => {
+      // making copy of previous list
       const updated = [...prev];
+      // at index, changing speified field value
       updated[index][field] = value;
       return updated;
     });
@@ -99,14 +111,18 @@ const AddProgressModal = ({ isOpen, onClose, date }) => {
         onClick={handleClose}
       />
       <div className="modal-content flex flex-col justify-start gap-5">
+        {/* heading and date */}
         <h2 className="font-bold text-3xl text-center">Add progress</h2>
         <h3 className="date font-semibold text-2xl text-center">
           {date.toLocaleDateString()}
         </h3>
 
+        {/* fields container with y-overflow */}
         <div className="fields overflow-y-auto max-h-[40vh] h-[40vh] pr-5">
-          {fieldsObj.map((field, index) => (
+          {/* rendering workFields with loop */}
+          {workFields.map((field, index) => (
             <div className="hover:bg-gray-300 p-3 rounded flex gap-2 flex-col">
+              {/* first work column */}
               <div className="flex justify-between items-center">
                 {/* hours */}
                 <div className="flex gap-2">
@@ -122,6 +138,7 @@ const AddProgressModal = ({ isOpen, onClose, date }) => {
                       handleFieldChange(index, "hours", e.target.value)
                     }
                   />
+
                   {/* mins */}
                   <input
                     className="border outline-0 p-2 w-1/5"
@@ -135,6 +152,7 @@ const AddProgressModal = ({ isOpen, onClose, date }) => {
                       handleFieldChange(index, "mins", e.target.value)
                     }
                   />
+
                   {/* category */}
                   <select
                     name="category"
@@ -143,7 +161,9 @@ const AddProgressModal = ({ isOpen, onClose, date }) => {
                       handleFieldChange(index, "category", e.target.value)
                     }
                   >
+                    {/* default first dummy option */}
                     <option value={""}>Select category</option>
+                    {/* rendering categories by map */}
                     {categories.map((category) => (
                       <option key={category} value={category.toLowerCase()}>
                         {category}
@@ -153,6 +173,8 @@ const AddProgressModal = ({ isOpen, onClose, date }) => {
                 </div>
                 <RxCross1 size={25} onClick={() => handleRemoveField(index)} />
               </div>
+              {/* second text row */}
+
               <input
                 type="text"
                 placeholder="work text"
@@ -165,10 +187,12 @@ const AddProgressModal = ({ isOpen, onClose, date }) => {
             </div>
           ))}
         </div>
+        {/* add field button */}
         <button className="text-blue font-semibold w-fit" onClick={addField}>
           + Add field
         </button>
 
+        {/* day text field */}
         <textarea
           className="border outline-0 w-full h-1/4 resize-none p-3 focus:border-blue rounded focus:bg-white"
           name="raw-text"
@@ -176,9 +200,10 @@ const AddProgressModal = ({ isOpen, onClose, date }) => {
           placeholder="enter raw text of your day here"
           onChange={(e) => setDayText(e.target.value)}
         />
+        {/* save button */}
         <button
           className="bg-blue rounded-2xl text-white p-3 w-fit outline-0"
-          onClick={handleSaveProgresstoDB}
+          onClick={handleSaveProgress}
         >
           Save
         </button>

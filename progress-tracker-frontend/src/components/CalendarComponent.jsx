@@ -1,17 +1,21 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
-import "./CalendarComponent.css";
 import AddProgressModal from "./AddProgressModal";
+// react-calendar css
+import "react-calendar/dist/Calendar.css";
+// for some css overwrite and resizing to calendar
+import "./CalendarComponent.css";
 
 const CalendarComponent = () => {
   const [date, setDate] = useState(new Date());
+  // addProgress Modal
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
 
+  // updates selectedDate on click to a date and opens modal
   function handleClickDay(day) {
     setSelectedDate(day); // Update selected date
-    setSelectedDate(day); // Keep for modal
+    setDate(day); // Keep for modal
     setIsModalOpen(true); // Open modal
   }
 
@@ -21,6 +25,7 @@ const CalendarComponent = () => {
 
   return (
     <div className="">
+      {/* Calendar component */}
       <Calendar onChange={setDate} value={date} onClickDay={handleClickDay} />
       <AddProgressModal
         isOpen={isModalOpen}
