@@ -105,7 +105,16 @@ def save_progress():
 
     return "success 2"
 
+
+@app.route("/api/get-month-progress")
+def get_month_progress():
+    month = request.args.get("month")
+    year = request.args.get("year")
         
+    db = get_db()
+    cursor = db.cursor()
+    month_progress = cursor.execute("SELECT * FROM work JOIN dates ON work.date_id  = dates.id WHERE date_id IN (SELECT id FROM dates WHERE date LIKE ?)", (f"{month}/%/{year}",))
+    return jsonify([dict(row) for row in month_progress])
 
 
     

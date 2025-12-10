@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { RxCross1 } from "react-icons/rx";
+import { get_options } from "./helpers";
 
 // categories
 const categories = [
@@ -105,6 +106,7 @@ const AddProgressModal = ({ isOpen, onClose, date }) => {
 
   return createPortal(
     <div className="add-progress-modal absolute bg-my-gray h-[97vh] w-[40%] top-0 left-100 border-black border rounded-2xl p-8">
+      {/* cross icon */}
       <RxCross1
         className="absolute top-7 right-7"
         size={20}
@@ -130,8 +132,6 @@ const AddProgressModal = ({ isOpen, onClose, date }) => {
                     className="border outline-0 p-2 w-1/5"
                     type="text"
                     name="hours"
-                    max={24}
-                    min={0}
                     value={field.hours}
                     placeholder="hours"
                     onChange={(e) =>
@@ -144,8 +144,6 @@ const AddProgressModal = ({ isOpen, onClose, date }) => {
                     className="border outline-0 p-2 w-1/5"
                     type="text"
                     name="mins"
-                    max={60}
-                    min={0}
                     value={field.mins}
                     placeholder="mins"
                     onChange={(e) =>
@@ -157,6 +155,7 @@ const AddProgressModal = ({ isOpen, onClose, date }) => {
                   <select
                     name="category"
                     value={field.category}
+                    // defaultValue={""}
                     onChange={(e) =>
                       handleFieldChange(index, "category", e.target.value)
                     }
@@ -164,11 +163,7 @@ const AddProgressModal = ({ isOpen, onClose, date }) => {
                     {/* default first dummy option */}
                     <option value={""}>Select category</option>
                     {/* rendering categories by map */}
-                    {categories.map((category) => (
-                      <option key={category} value={category.toLowerCase()}>
-                        {category}
-                      </option>
-                    ))}
+                    {get_options(categories)}
                   </select>
                 </div>
                 <RxCross1 size={25} onClick={() => handleRemoveField(index)} />

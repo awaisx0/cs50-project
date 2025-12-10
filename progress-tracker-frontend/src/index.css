@@ -31,3 +31,7 @@ select {
   outline: none;
   padding: 10px;
 }
+
+table tr {
+  text-align: left;
+}
