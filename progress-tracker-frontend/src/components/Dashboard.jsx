@@ -60,7 +60,7 @@ const Dashboard = () => {
             <option value={2028}>2028</option>
           </select>
         </div>
-        <table className="table-fixed border-collapse">
+        <table className="table-fixed border-collapse w-full text-sm">
           <colgroup>
             <col style={{ width: "10%" }} />
             <col style={{ width: "20%" }} />
@@ -68,23 +68,28 @@ const Dashboard = () => {
             <col style={{ width: "10%" }} />
             <col style={{ width: "auto" }} />
           </colgroup>
+
           <thead>
-            <tr>
-              <th>Date</th>
-              <th>Work Category</th>
-              <th>Hours</th>
-              <th>Mins</th>
-              <th>Work text</th>
+            <tr className="bg-gray-100 text-left text-gray-700 border-b">
+              <th className="p-3 font-medium">Date</th>
+              <th className="p-3 font-medium">Work Category</th>
+              <th className="p-3 font-medium">Hours</th>
+              <th className="p-3 font-medium">Mins</th>
+              <th className="p-3 font-medium">Work text</th>
             </tr>
           </thead>
+
           <tbody>
-            {workFields.map((field) => (
-              <tr>
-                <td>{field.date}</td>
-                <td>{field.category}</td>
-                <td>{field.hours}</td>
-                <td>{field.mins}</td>
-                <td>{field.work_text}</td>
+            {workFields.map((field, idx) => (
+              <tr
+                key={idx}
+                className="border-b last:border-0 hover:bg-gray-50 transition-colors"
+              >
+                <td className="p-3">{field.date}</td>
+                <td className="p-3">{field.category}</td>
+                <td className="p-3">{field.hours}</td>
+                <td className="p-3">{field.mins}</td>
+                <td className="p-3">{field.work_text}</td>
               </tr>
             ))}
           </tbody>

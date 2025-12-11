@@ -21,22 +21,23 @@ const AddProgressModal = ({ isOpen, onClose, date }) => {
   if (!isOpen) return null;
 
   return createPortal(
-    <div className="add-progress-modal absolute bg-my-gray h-[97vh] w-[40%] top-0 left-100 border-black border rounded-2xl p-8">
+    <div
+      className="add-progress-modal absolute bg-my-gray h-[95%] w-[40%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+ border-black border rounded-2xl p-8"
+    >
       {/* cross icon */}
       <RxCross1
         className="absolute top-7 right-7"
         size={20}
         onClick={handleClose}
       />
-      <div className="modal-content flex flex-col justify-start gap-5">
+      <div className="modal-content flex flex-col justify-start items-start gap-5">
         {/* heading and date */}
-        <h2 className="font-bold text-3xl text-center">Add progress</h2>
-        <h3 className="date font-semibold text-2xl text-center">
-          {date.toLocaleDateString()}
-        </h3>
+        <h2 className="text-center">Add progress</h2>
+        <h3 className="date text-center">{date.toLocaleDateString()}</h3>
 
         {/* fields container with y-overflow */}
-        <div className="fields overflow-y-auto max-h-[40vh] h-[40vh] pr-5">
+        <div className="fields overflow-y-auto h-[40vh]">
           {/* rendering workFields with loop */}
           {workFields.map((field, index) => (
             <WorkField
@@ -49,13 +50,13 @@ const AddProgressModal = ({ isOpen, onClose, date }) => {
           ))}
         </div>
         {/* add field button */}
-        <button className="text-blue font-semibold w-fit" onClick={addField}>
+        <button className="text-blue font-semibold" onClick={addField}>
           + Add field
         </button>
 
         {/* day text field */}
         <textarea
-          className="border outline-0 w-full h-1/4 resize-none p-3 focus:border-blue rounded focus:bg-white"
+          className="w-full h-1/4 p-3 rounded focus:border-blue focus:bg-white"
           name="raw-text"
           value={dayText}
           placeholder="enter raw text of your day here"
@@ -63,7 +64,7 @@ const AddProgressModal = ({ isOpen, onClose, date }) => {
         />
         {/* save button */}
         <button
-          className="bg-blue rounded-2xl text-white p-3 w-fit outline-0"
+          className="bg-blue rounded-2xl text-white p-3 outline-0"
           onClick={() => postProgress(date, workFields, dayText)}
         >
           Save

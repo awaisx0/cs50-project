@@ -1,5 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap");
 @import "tailwindcss";
-/* @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"); */
 @theme {
   --color-mint-500: oklch(0.72 0.11 178);
   --color-my-gray: oklch(92.9% 0.013 255.508);
@@ -12,26 +12,60 @@
   --hover-gray: oklch(70.5% 0.015 286.067);
 }
 
-* {
-  box-sizing: border-box;
+/* chatgpt help + refinement */
+@layer base {
+  html {
+    scrollbar-gutter: stable;
+  }
+  body {
+    font-family: "Inter", system-ui, sans-serif;
+    /* color: #1f2937; text-gray-800 equivalent */
+    /* background-color: #ffffff; optional default bg */
+  }
+  /* Typography */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p {
+    margin-bottom: 1rem; /* consistent spacing */
+  }
+
+  h1 {
+    font-size: 1.875rem;
+    font-weight: 600;
+  } /* 3xl / semibold */
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+  } /* 2xl / semibold */
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 500;
+  } /* xl / medium */
+  p,
+  td {
+    font-size: 1rem;
+  } /* base */
+
+  /* Form elements */
+  input,
+  textarea,
+  select {
+    outline: none;
+    font-family: inherit; /* keep typography consistent */
+    border-color: var(--blue);
+    border-width: 2px;
+    border-radius: 10px;
+    padding: 8px;
+  }
+  textarea {
+    resize: none;
+  }
 }
-input:focus {
-  border-color: var(--blue);
+
+/* input:focus {
   background-color: white;
-}
-input {
-  border-width: 2px;
-  border-radius: 10px;
-}
-
-select {
-  border-color: var(--blue);
-  border-width: 2px;
-  border-radius: 10px;
-  outline: none;
-  padding: 10px;
-}
-
-table tr {
-  text-align: left;
-}
+} */
