@@ -1,108 +1,24 @@
-import React, { useEffect, useState } from "react";
+// import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { RxCross1 } from "react-icons/rx";
-import { get_options } from "./helpers";
-
-// categories
-const categories = [
-  "JS",
-  "PYTHON",
-  "C",
-  "C++",
-  "JAVA",
-  "LINUX",
-  "CS:APP",
-  "CS50",
-];
+import useProgressData from "../hooks/useProgressData";
+// import InputField from "./InputField";
+import { postProgress } from "../helpers";
+import WorkField from "./WorkField";
 
 const AddProgressModal = ({ isOpen, onClose, date }) => {
-  const [dayText, setDayText] = useState("");
-  // array of work fields
-  const [workFields, setWorkFields] = useState([
-    {
-      hours: "",
-      mins: "",
-      category: "",
-      work_text: "",
-    },
-  ]);
-
-  // fetching work fields as date is changed
-  useEffect(() => {
-    if (!date) return;
-    const url = `http://localhost:5000/api/get-progress?date=${date.toLocaleDateString()}`;
-
-    fetch(url)
-      .then((res) => {
-        if (!res.ok) throw new Error("Network response was not okay");
-        return res.json();
-      })
-      // data is an an object of work_field and day_text
-      .then((data) => {
-        if (data.work_fields) setWorkFields(data.work_fields);
-        if (data.day_text.raw_text) setDayText(data.day_text.raw_text);
-        return;
-      })
-      .catch((err) => console.log("Fetch error: ", err));
-  }, [date]);
+  const {
+    workFields,
+    dayText,
+    setDayText,
+    addField,
+    handleFieldChange,
+    handleRemoveField,
+    handleClose,
+  } = useProgressData(date, onClose);
 
   // if modal is not opened, no need to render anything
   if (!isOpen) return null;
-
-  function handleClose() {
-    onClose();
-    // setting all fields to default values
-    setWorkFields([
-      {
-        hours: "",
-        mins: "",
-        category: "",
-        work_text: "",
-      },
-    ]);
-  }
-
-  // post progress to backend
-  async function handleSaveProgress() {
-    const response = await fetch("http://localhost:5000/api/save-progress", {
-      method: "POST",
-      headers: {
-        // specifying we're sending json
-        "Content-Type": "application/json",
-      },
-      // json body
-      body: JSON.stringify({
-        date: date.toLocaleDateString(),
-        work_fields: workFields,
-        day_text: dayText,
-      }),
-    });
-    console.log(response);
-  }
-
-  function addField() {
-    // all prev objects + one more object with empty values
-    setWorkFields((prev) => [
-      ...prev,
-      { hours: "", mins: "", category: "", work_text: "" },
-    ]);
-  }
-
-  function handleRemoveField(index) {
-    // removing a field by filtering by index
-    setWorkFields((prev) => prev.filter((_, i) => i !== index));
-  }
-
-  //
-  function handleFieldChange(index, field, value) {
-    setWorkFields((prev) => {
-      // making copy of previous list
-      const updated = [...prev];
-      // at index, changing speified field value
-      updated[index][field] = value;
-      return updated;
-    });
-  }
 
   return createPortal(
     <div className="add-progress-modal absolute bg-my-gray h-[97vh] w-[40%] top-0 left-100 border-black border rounded-2xl p-8">
@@ -123,63 +39,13 @@ const AddProgressModal = ({ isOpen, onClose, date }) => {
         <div className="fields overflow-y-auto max-h-[40vh] h-[40vh] pr-5">
           {/* rendering workFields with loop */}
           {workFields.map((field, index) => (
-            <div className="hover:bg-gray-300 p-3 rounded flex gap-2 flex-col">
-              {/* first work column */}
-              <div className="flex justify-between items-center">
-                {/* hours */}
-                <div className="flex gap-2">
-                  <input
-                    className="border outline-0 p-2 w-1/5"
-                    type="text"
-                    name="hours"
-                    value={field.hours}
-                    placeholder="hours"
-                    onChange={(e) =>
-                      handleFieldChange(index, "hours", e.target.value)
-                    }
-                  />
-
-                  {/* mins */}
-                  <input
-                    className="border outline-0 p-2 w-1/5"
-                    type="text"
-                    name="mins"
-                    value={field.mins}
-                    placeholder="mins"
-                    onChange={(e) =>
-                      handleFieldChange(index, "mins", e.target.value)
-                    }
-                  />
-
-                  {/* category */}
-                  <select
-                    name="category"
-                    value={field.category}
-                    // defaultValue={""}
-                    onChange={(e) =>
-                      handleFieldChange(index, "category", e.target.value)
-                    }
-                  >
-                    {/* default first dummy option */}
-                    <option value={""}>Select category</option>
-                    {/* rendering categories by map */}
-                    {get_options(categories)}
-                  </select>
-                </div>
-                <RxCross1 size={25} onClick={() => handleRemoveField(index)} />
-              </div>
-              {/* second text row */}
-
-              <input
-                type="text"
-                placeholder="work text"
-                className="border outline-0 p-2 w-full"
-                value={field.work_text}
-                onChange={(e) =>
-                  handleFieldChange(index, "work_text", e.target.value)
-                }
-              />
-            </div>
+            <WorkField
+              key={index}
+              index={index}
+              field={field}
+              handleFieldChange={handleFieldChange}
+              handleRemoveField={handleRemoveField}
+            />
           ))}
         </div>
         {/* add field button */}
@@ -198,7 +64,7 @@ const AddProgressModal = ({ isOpen, onClose, date }) => {
         {/* save button */}
         <button
           className="bg-blue rounded-2xl text-white p-3 w-fit outline-0"
-          onClick={handleSaveProgress}
+          onClick={() => postProgress(date, workFields, dayText)}
         >
           Save
         </button>

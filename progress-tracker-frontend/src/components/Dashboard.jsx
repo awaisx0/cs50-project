@@ -1,25 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { get_options } from "./helpers";
 import { FiShield } from "react-icons/fi";
+import { months } from "../simpleData";
 
 let currentDate = new Date();
 let currentYear = currentDate.getFullYear();
 let currentMonthIndex = currentDate.getMonth();
-
-const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
 
 const Dashboard = () => {
   const [selectedMonth, setSelectedMonth] = useState(
