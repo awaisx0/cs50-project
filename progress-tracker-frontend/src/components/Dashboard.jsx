@@ -1,32 +1,20 @@
-import React, { useEffect, useState } from "react";
 import { get_options } from "./helpers";
-import { FiShield } from "react-icons/fi";
 import { months } from "../simpleData";
-
-let currentDate = new Date();
-let currentYear = currentDate.getFullYear();
-let currentMonthIndex = currentDate.getMonth();
+import { useMonthProgress } from "../hooks/useMonthProgress";
+import MyBarChart from "./MyBarChart";
 
 const Dashboard = () => {
-  const [selectedMonth, setSelectedMonth] = useState(
-    currentDate.getMonth() + 1,
-  );
-  const [selectedYear, setSelectedYear] = useState(currentDate.getFullYear());
-  const [workFields, setWorkFields] = useState([]);
-  useEffect(() => {
-    fetch(
-      `http://localhost:5000/api/get-month-progress?month=${selectedMonth}&year=${selectedYear}`,
-    )
-      .then((res) => {
-        if (!res.ok) throw new Error("Network response was not okay");
-        return res.json();
-      })
-      .then((data) => setWorkFields(data))
-      .catch((err) => console.log("Fetch error: ", err));
-  }, [selectedMonth, selectedYear]);
+  const {
+    workFields,
+    handleYearSelect,
+    handleMonthSelect,
+    currentMonth,
+    currentYear,
+  } = useMonthProgress();
 
   return (
     <div className="w-full">
+      <MyBarChart />
       <div className="main w-4/5 m-auto flex flex-col gap-5 px-10 py-10">
         <div className="dashboard-heading h-40 flex items-center">
           <h1 className="text-5xl font-bold py-3">Dashboard</h1>
@@ -34,14 +22,8 @@ const Dashboard = () => {
         <div className="filter-fields flex gap-5 items-start">
           <select
             name="month"
-            defaultValue={months[currentMonthIndex].toLowerCase()}
-            onChange={(e) =>
-              setSelectedMonth(
-                months.findIndex(
-                  (elem) => elem.toLowerCase() === e.target.value,
-                ) + 1,
-              )
-            }
+            defaultValue={months[currentMonth - 1].toLowerCase()}
+            onChange={handleMonthSelect}
           >
             {/* render options */}
             {get_options(months)}
@@ -49,10 +31,10 @@ const Dashboard = () => {
           <select
             name="year"
             defaultValue={currentYear}
-            onChange={(e) => setSelectedYear(e.target.value)}
+            onChange={handleYearSelect}
           >
-            <option value={2022}>2024</option>
-            <option value={2023}>2024</option>
+            <option value={2022}>2022</option>
+            <option value={2023}>2023</option>
             <option value={2024}>2024</option>
             <option value={2025}>2025</option>
             <option value={2026}>2026</option>

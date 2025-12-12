@@ -1,0 +1,12 @@
+UPDATE dates SET date = '12/1/2025' WHERE id = 1;
+UPDATE dates SET date = '12/2/2025' WHERE id = 2;
+UPDATE dates SET date = '12/3/2025' WHERE id = 3;
+UPDATE dates SET date = '12/4/2025' WHERE id = 4;
+UPDATE dates SET date = '12/5/2025' WHERE id = 5;
+UPDATE dates SET date = '12/6/2025' WHERE id = 6;
+UPDATE dates SET date = '12/7/2025' WHERE id = 7;
+UPDATE dates SET date = '12/8/2025' WHERE id = 8;
+UPDATE dates SET date = '12/9/2025' WHERE id = 9;
+UPDATE dates SET date = '12/10/2025' WHERE id = 10;
+UPDATE dates SET date = '12/11/2025' WHERE id = 11;
+UPDATE dates SET date = '12/12/2025' WHERE id = 12;
