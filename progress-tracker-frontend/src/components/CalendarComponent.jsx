@@ -14,8 +14,9 @@ const CalendarComponent = () => {
 
   // updates selectedDate on click to a date and opens modal
   function handleClickDay(day) {
-    setSelectedDate(day); // Update selected date
     setDate(day); // Keep for modal
+    // Update selected date ISO format
+    setSelectedDate(day.toISOString().split("T")[0]);
     setIsModalOpen(true); // Open modal
   }
 

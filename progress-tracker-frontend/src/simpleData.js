@@ -1,14 +1,6 @@
 // categories
-const categories = [
-  "JS",
-  "PYTHON",
-  "C",
-  "C++",
-  "JAVA",
-  "LINUX",
-  "CS:APP",
-  "CS50",
-];
+// let categories = [];
+
 const months = [
   "January",
   "February",
@@ -23,4 +15,4 @@ const months = [
   "November",
   "December",
 ];
-export { categories, months };
+export { months };

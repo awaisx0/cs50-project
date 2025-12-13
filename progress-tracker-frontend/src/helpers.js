@@ -1,4 +1,5 @@
 async function postProgress(date, workFields, dayText) {
+  if (!date) return;
   const postProgressUrl = "http://localhost:5000/api/save-progress";
   await fetch(postProgressUrl, {
     method: "POST",
@@ -8,7 +9,7 @@ async function postProgress(date, workFields, dayText) {
     },
     // json body
     body: JSON.stringify({
-      date: date.toLocaleDateString(),
+      date: date,
       work_fields: workFields,
       day_text: dayText,
     }),

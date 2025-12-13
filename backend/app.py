@@ -1,6 +1,7 @@
 from flask import Flask, g, request, jsonify
 import sqlite3
 from flask_cors import CORS
+import datetime
 
 # chatgpt help
 def get_db():
@@ -9,12 +10,6 @@ def get_db():
         g.db.row_factory = sqlite3.Row
     return g.db
 
-# helper - maybe
-def list_dict_null_check(list_dicts):
-    for dic in list_dicts:
-        if dic:
-            return True
-    return False
 
 app = Flask(__name__)
 CORS(app)
@@ -32,12 +27,17 @@ def index():
 def get_progress():
     """
     get-progress route
-    """
+    """ 
+    # get date
     date = request.args.get("date", "")
     if not date:
-        return "no date given"
+        return jsonify([])
     
-    # todo: handle date validation
+    # handle date validation 
+    try:
+        dateObj = datetime.datetime.strptime(date, "%Y-%m-%d")
+    except ValueError:
+        return jsonify([])
     
     db = get_db()
     cursor = db.cursor()
@@ -48,8 +48,9 @@ def get_progress():
     result = cursor.execute("SELECT * FROM day_text WHERE date_id = (SELECT id FROM dates WHERE date = ?)", (date,)).fetchone()
     if result is not None:
         day_text = dict(result)
+        day_text = day_text["raw_text"]
     else:
-        day_text = {}
+        day_text = ""
 
     # return both as json
     return jsonify({
@@ -115,6 +116,18 @@ def get_month_progress():
     cursor = db.cursor()
     month_progress = cursor.execute("SELECT * FROM work JOIN dates ON work.date_id  = dates.id WHERE date_id IN (SELECT id FROM dates WHERE date LIKE ?)", (f"{month}/%/{year}",))
     return jsonify([dict(row) for row in month_progress])
+
+
+@app.route("/api/get-categories")
+def get_categories():
+    db = get_db()
+    cursor = db.cursor()
+    rows = cursor.execute("SELECT * FROM categories")
+    categories = [dict(row) for row in rows]
+    # making list of values out of a list of dicts
+    categories_list = list(map(lambda x: x["category"], categories))
+    return jsonify(categories_list)
+
 
 
     

@@ -13,7 +13,7 @@ function useProgressData(date, onClose) {
 
   useEffect(() => {
     if (!date) return;
-    const url = `http://localhost:5000/api/get-progress?date=${date.toLocaleDateString()}`;
+    const url = `http://localhost:5000/api/get-progress?date=${date}`;
     fetch(url)
       .then((res) => {
         if (!res.ok) throw new Error("Network response was not okay");
@@ -21,7 +21,7 @@ function useProgressData(date, onClose) {
       })
       .then((data) => {
         if (data.work_fields) setWorkFields(data.work_fields);
-        if (data.day_text.raw_text) setDayText(data.day_text.raw_text);
+        if (data.day_text) setDayText(data.day_text);
         return;
       })
       .catch((err) => console.log("Fetch error: ", err));
@@ -61,6 +61,7 @@ function useProgressData(date, onClose) {
         work_text: "",
       },
     ]);
+    setDayText("");
   }
   return {
     workFields,
