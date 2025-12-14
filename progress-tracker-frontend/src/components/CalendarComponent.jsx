@@ -12,11 +12,15 @@ const CalendarComponent = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
 
+  function dateToYMD(date) {
+    return date.toLocaleDateString("en-CA");
+  }
+
   // updates selectedDate on click to a date and opens modal
   function handleClickDay(day) {
     setDate(day); // Keep for modal
     // Update selected date ISO format
-    setSelectedDate(day.toISOString().split("T")[0]);
+    setSelectedDate(dateToYMD(day));
     setIsModalOpen(true); // Open modal
   }
 

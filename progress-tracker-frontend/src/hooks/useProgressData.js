@@ -20,7 +20,7 @@ function useProgressData(date, onClose) {
         return res.json();
       })
       .then((data) => {
-        if (data.work_fields) setWorkFields(data.work_fields);
+        if (data.work_fields.length !== 0) setWorkFields(data.work_fields);
         if (data.day_text) setDayText(data.day_text);
         return;
       })
@@ -35,11 +35,6 @@ function useProgressData(date, onClose) {
     ]);
   }
 
-  function handleRemoveField(index) {
-    // removing a field by filtering by index
-    setWorkFields((prev) => prev.filter((_, i) => i !== index));
-  }
-
   //
   function handleFieldChange(index, field, value) {
     setWorkFields((prev) => {
@@ -50,6 +45,14 @@ function useProgressData(date, onClose) {
       return updated;
     });
   }
+
+  function handleRemoveField(index) {
+    // ensuring not all fields could be removed
+    if (workFields.length < 2) return;
+    // removing a field by filtering by index
+    setWorkFields((prev) => prev.filter((_, i) => i !== index));
+  }
+
   function handleClose() {
     onClose();
     // setting all fields to default values

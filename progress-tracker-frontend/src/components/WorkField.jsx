@@ -5,7 +5,6 @@ import useCategoriesList from "../hooks/useCategoriesList";
 
 const WorkField = ({ index, field, handleFieldChange, handleRemoveField }) => {
   const categories = useCategoriesList();
-  console.log(categories);
 
   return (
     <div className="hover:bg-gray-300 p-3 rounded flex gap-2 flex-col items-start w-[95%]">
