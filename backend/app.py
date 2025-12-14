@@ -65,6 +65,13 @@ def save_progress():
     date = request_body.get("date")
     work_fields = request_body.get("work_fields")
     day_text = request_body.get("day_text", "")
+
+        # handle date validation 
+    try:
+        dateObj = datetime.datetime.strptime(date, "%Y-%m-%d")
+    except ValueError:
+        return jsonify([])
+    
     db = get_db()
     cursor = db.cursor()
     # find date_id
@@ -81,7 +88,7 @@ def save_progress():
         # insert work fields
         for field in work_fields:
             cursor.execute("INSERT INTO work (date_id, hours, mins, category, work_text) VALUES(?, ?, ?, ?, ?)", (date_id, field.get("hours"), field.get("mins"), field.get("category"), field.get("work_text")))
-            db.commit()
+        db.commit()
         
         # insert day_text
         cursor.execute("INSERT INTO day_text (date_id, raw_text) VALUES(?, ?)", (date_id, day_text))
@@ -98,7 +105,7 @@ def save_progress():
         # inserting updated content
         for field in work_fields:
             cursor.execute("INSERT INTO work (date_id, hours, mins, category, work_text) VALUES(?, ?, ?, ?, ?)", (date_id, field.get("hours"), field.get("mins"), field.get("category"), field.get("work_text")))
-            db.commit()
+        db.commit()
         
         # insert day_text
         cursor.execute("INSERT INTO day_text (date_id, raw_text) VALUES(?, ?)", (date_id, day_text))
@@ -113,10 +120,21 @@ def save_progress():
 def get_month_progress():
     month = request.args.get("month")
     year = request.args.get("year")
+
+    # validating year
+    if not year.isdigit() or not (1900 <= int(year) <= 2100):
+        return jsonify([])
+    
+    # validating month
+    if not month.isdigit() or not (1 <= int(month) <= 12 ):
+        return jsonify([])
+    month = f"{int(month):02}"
+    
     db = get_db()
     cursor = db.cursor()
     # get month progress fields
-    month_progress = cursor.execute("SELECT * FROM work JOIN dates ON work.date_id  = dates.id WHERE date_id IN (SELECT id FROM dates WHERE date LIKE ?) ORDER BY date", (f"{year}-{month}-%",))
+    month_progress = cursor.execute("SELECT * FROM work JOIN dates ON work.date_id  = dates.id WHERE date LIKE ? ORDER BY date", (f"{year}-{month}-%",))
+
     return jsonify([dict(row) for row in month_progress])
 
 
@@ -133,8 +151,6 @@ def get_categories():
 
 
     
-
-
 
 
 # chatgpt help
