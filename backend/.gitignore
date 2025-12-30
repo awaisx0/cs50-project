@@ -49,3 +49,4 @@ instance/
 .DS_Store # macOS system files
 sqlite_commands.txt
 progress.db
+1.sql
