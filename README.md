@@ -23,3 +23,21 @@ It works pretty simply:
 - React-Router for implementing basic navigation 
 - `react-calendar` library was used to render calendar
 
+
+## Project Walkthrough
+### Frontend Walkthrough 
+Frontend is made in react. I had learned react basics recently so I wanted to do it with react because I liked its smooth CSR (client side rendering). Manual dom manipulation just felt to daunting. 
+I created this react project with Vite. 
+
+Main code files in this are:
+#### `src/main.jsx`
+It's the main.jsx file which imports renders `<App />`. lt implements both Browser router and dom rendering.
+
+#### `src/App.jsx`
+It's the main App which is imported and rendered in main.jsx. 
+It imports other components and sets up React-Router routes. 
+
+
+
+### Backend Walkthrough 
+
