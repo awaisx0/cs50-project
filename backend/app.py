@@ -66,7 +66,7 @@ def save_progress():
     work_fields = request_body.get("work_fields")
     day_text = request_body.get("day_text", "")
 
-        # handle date validation 
+    # handle date validation 
     try:
         dateObj = datetime.datetime.strptime(date, "%Y-%m-%d")
     except ValueError:
@@ -145,10 +145,8 @@ def get_categories():
     rows = cursor.execute("SELECT * FROM categories")
     categories = [dict(row) for row in rows]
     # making list of values out of a list of dicts
-    categories_list = list(map(lambda x: x["category"], categories))
-    return jsonify(categories_list)
-
-
+    categories_set = list(map(lambda x: x["category"], categories))
+    return jsonify(categories_set)
 
     
 

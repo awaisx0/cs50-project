@@ -1,7 +1,6 @@
 import { get_options } from "./helpers";
 import { months } from "../simpleData";
 import { useMonthProgress } from "../hooks/useMonthProgress";
-import MyBarChart from "./MyBarChart";
 
 const Dashboard = () => {
   const {
@@ -14,7 +13,6 @@ const Dashboard = () => {
 
   return (
     <div className="w-full">
-      <MyBarChart />
       <div className="main w-4/5 m-auto flex flex-col gap-5 px-10 py-10">
         <div className="dashboard-heading h-40 flex items-center">
           <h1 className="text-5xl font-bold py-3">Dashboard</h1>
