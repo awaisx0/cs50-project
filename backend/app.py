@@ -18,7 +18,7 @@ CORS(app)
 @app.route("/")
 def index():
     """
-    Docstring for index
+    simple docstring returning hello world
     """
     return "hello world"
 
@@ -26,7 +26,7 @@ def index():
 @app.route("/api/get-progress")
 def get_progress():
     """
-    get-progress route
+    get-progress GET route to get progress of the specified date
     """ 
     # get date
     date = request.args.get("date", "")
@@ -41,9 +41,11 @@ def get_progress():
     
     db = get_db()
     cursor = db.cursor()
+
     # get work_fields
     result = cursor.execute("SELECT * FROM work WHERE date_id = (SELECT id FROM dates WHERE date = ?)", (date,)).fetchall()
     work_fields = [dict(row) for row in result]
+
     # get day_text
     result = cursor.execute("SELECT * FROM day_text WHERE date_id = (SELECT id FROM dates WHERE date = ?)", (date,)).fetchone()
     if result is not None:
@@ -61,6 +63,10 @@ def get_progress():
 
 @app.route("/api/save-progress", methods=["POST"])
 def save_progress():
+    """
+    save-progress POST route for saving progress
+    """
+    # get data
     request_body = request.get_json()
     date = request_body.get("date")
     work_fields = request_body.get("work_fields")
@@ -70,10 +76,12 @@ def save_progress():
     try:
         dateObj = datetime.datetime.strptime(date, "%Y-%m-%d")
     except ValueError:
-        return jsonify([])
+        # date is invalid send failure message
+        return "Invalid date in request body"
     
     db = get_db()
     cursor = db.cursor()
+
     # find date_id
     date_id = (cursor.execute("SELECT id FROM dates WHERE date = ?", (date, )).fetchone())
 
@@ -82,6 +90,7 @@ def save_progress():
         # insert date
         cursor.execute("INSERT INTO dates (date) VALUES(?)", (date,))
         db.commit()
+        # get id of date row just inserted
         date_id_row = dict(cursor.execute("SELECT id FROM dates WHERE date = ?", (date,)).fetchone())
         date_id = date_id_row.get("id")
 
@@ -93,16 +102,17 @@ def save_progress():
         # insert day_text
         cursor.execute("INSERT INTO day_text (date_id, raw_text) VALUES(?, ?)", (date_id, day_text))
         db.commit()
-        return "success"
+        return "work added for new date"
+    
     else:
         date_id = dict(date_id).get("id")
-        # deleting previous which have same date_id
+        # deleting previous work which have same date_id
         cursor.execute("DELETE FROM work WHERE date_id = ?", (date_id, ))
         db.commit()
         cursor.execute("DELETE FROM day_text WHERE date_id = ?", (date_id, ))
         db.commit()
 
-        # inserting updated content
+        # inserting updated work details
         for field in work_fields:
             cursor.execute("INSERT INTO work (date_id, hours, mins, category, work_text) VALUES(?, ?, ?, ?, ?)", (date_id, field.get("hours"), field.get("mins"), field.get("category"), field.get("work_text")))
         db.commit()
@@ -112,12 +122,14 @@ def save_progress():
         db.commit()
 
 
-
-    return "success 2"
+    return "work updated"
 
 
 @app.route("/api/get-month-progress")
 def get_month_progress():
+    """
+    get-month-progress GET route for getting selected month progress
+    """
     month = request.args.get("month")
     year = request.args.get("year")
 
@@ -140,6 +152,9 @@ def get_month_progress():
 
 @app.route("/api/get-categories")
 def get_categories():
+    """
+    get-categories GET route to get all categories
+    """
     db = get_db()
     cursor = db.cursor()
     rows = cursor.execute("SELECT * FROM categories")
