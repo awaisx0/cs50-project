@@ -1,6 +1,6 @@
 # CS50 Final Project - Personal Progress Tracker
 
-#### Video demo:
+#### Video demo: https://youtu.be/w1hAwgfxA-Y
 
 ### Description
 
@@ -144,3 +144,6 @@ It has sql queries for recreating database tables if they don't exist already. I
 ### `requirements.txt`
 
 Contains all dependencies of this project
+
+
+# This was CS50x!
