@@ -1,6 +1,3 @@
-// categories
-// let categories = [];
-
 const months = [
   "January",
   "February",
