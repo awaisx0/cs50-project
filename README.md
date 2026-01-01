@@ -114,6 +114,26 @@ Backend is built with flask and sqlite3. CORS for flask was also used. It's a pr
 
 All the flask app code lives here.
 
+- It sets up flask app
+- `get_db()` function gets the db whenever called
+- `init_db()` is run starting the app, it runs schema.sql so that table exists before app.run() proceeds
+
+#### `/api/get-progress`
+
+get-progress GET route to get progress of the specified date
+
+#### `/api/save-progress`
+
+save-progress POST route for saving progress
+
+#### `get-month-progress`
+
+get-month-progress GET route for getting selected month progress
+
+#### `get-categories`
+
+get-categories GET route to get all categories
+
 ### `schema.sql`
 
 It has sql queries for recreating database tables if they don't exist already. It's read into app.py in `init_db` so tables could be created if they don't already exist.
