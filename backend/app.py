@@ -10,6 +10,14 @@ def get_db():
         g.db.row_factory = sqlite3.Row
     return g.db
 
+# chatgpt help for init_db
+def init_db():
+    db = sqlite3.connect("progress.db")
+    with open("schema.sql") as f:
+        db.executescript(f.read())
+    db.commit()
+    db.close()
+
 
 app = Flask(__name__)
 CORS(app)
@@ -174,6 +182,7 @@ def close_db(exception):
         db.close()
 
 
-# chatgpt help for deploying server
+# chatgpt help 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=5000, debug=False, use_reloader=False)
+    init_db()
+    app.run()
