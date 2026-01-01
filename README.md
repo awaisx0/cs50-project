@@ -11,12 +11,15 @@ For this final project, I went on to create a personal progress tracker. It's a 
 
 It works pretty simply:
 
+- Go to calendar page
 - Click on any date you want at Calendar page
 - A modal will appear in which there are fields of time, category, text of what work did and a textarea for day's reflection/thoughts. You can add as many fields as you want
 - After filling out your work of day, just click "Save" and your day's progress is saved.
 - Whenever you want to see what work you did on a particular date, just click on that date from calendar and a modal will open showing you all work of that day.
 - You can simply edit and update your work whenever you want
-- You can navigate to dashboard page and there you can see your work on month in a table.
+- You can navigate to dashboard page.
+- You can select month and year and get all fields on that month work
+- Fields are rendered in form of a simple table
 
 ### Tech I used:
 
